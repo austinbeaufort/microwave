@@ -1,6 +1,5 @@
-import showTime from './get-time';
 import { glass, panelDisplay, panel } from './models/display-items';
-import { insert, takeLast, min } from 'ramda';
+import { insert } from 'ramda';
 import sounds from './microwave-sounds';
 
 type Status = "showingClock" | "settingTimer" | "cooking" | 'done';

@@ -17,8 +17,6 @@ class Microwave {
         this.#status = "showingClock";
         this.#cookTime = "";
         this.#cookId = 0;
-        console.log(sounds)
-
     }
 
     clear(): void

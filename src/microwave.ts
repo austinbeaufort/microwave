@@ -21,6 +21,17 @@ class Microwave {
 
     }
 
+    clear(): void
+    {
+        sounds.buttonPress.play()
+        sounds.running.stop()
+        sounds.end.stop()
+        this.setStatus("showingClock");
+        this.clearCookTime();
+        this.toggleGlass();
+        this.showClock();
+    }
+
     setStatus(newStatus: Status)
     {
         this.#status = newStatus;

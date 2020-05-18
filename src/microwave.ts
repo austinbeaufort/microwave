@@ -3,8 +3,7 @@ import { insert } from 'ramda';
 import sounds from './microwave-sounds';
 
 type Status = "showingClock" | "settingTimer" | "cooking" | 'done';
-type PanelButton = '0' | '1' | '2' | '3' | '4' | '5' | '6' | 'clear-off' |
-                     '7' | '8' | '9' | 'add-30' | 'time-cook' | 'start';
+
 
 
 class Microwave {
@@ -85,27 +84,7 @@ class Microwave {
             }
             else
             {
-                const today: Date = new Date();
-                let hours = today.getHours();
-                let ampm: string;
-                if (hours >= 12)
-                {
-                    ampm = 'PM';
-                }
-                else
-                {
-                    ampm = 'AM';
-                }
-                const isMidnight: boolean = hours % 12 === 0;
-                if (isMidnight)
-                {
-                    hours = 0;
-                }
-                else
-                {
-                    hours = hours % 12;
-                }
-                const displayDate: string = `${format(hours)}:${format(today.getMinutes())}:${format(today.getSeconds())}${ampm}`;
+                const displayDate: string = formatDate();
                 panelDisplay.innerHTML = displayDate;
             }
         }, 100);
@@ -165,6 +144,33 @@ class Microwave {
 }
 
 
+function formatDate(): string
+{
+    const today: Date = new Date();
+    let hours = today.getHours();
+    let ampm: string;
+    if (hours >= 12)
+    {
+        ampm = 'PM';
+    }
+    else
+    {
+        ampm = 'AM';
+    }
+    const isMidnight: boolean = hours % 12 === 0;
+    if (isMidnight)
+    {
+        hours = 0;
+    }
+    else
+    {
+        hours = hours % 12;
+    }
+    const displayDate: string = `${format(hours)}:${format(today.getMinutes())}:${format(today.getSeconds())}${ampm}`;
+    return displayDate;
+}
+
+
 function getSeconds(cookTime: string, isExpress: boolean): number
 {
     let seconds: number;
@@ -197,85 +203,6 @@ function cookTimeAsMinutes(cookSeconds: number): string
     return displayTime;
 }
 
-
-function main(): void
-{
-    const microwave = new Microwave();
-    panel.addEventListener('click', changeStatus.bind(null, microwave));
-}
-
-main();
-
-
-function changeStatus(microwave, e): void
-{
-    const buttonPressed: PanelButton = e.target.id;
-    switch (buttonPressed)
-    {
-        case "time-cook":
-            sounds.buttonPress.play()
-            microwave.setStatus("settingTimer");
-            panelDisplay.innerHTML = 'TIME';
-            microwave.clearCookTime();
-            break;
-        case "clear-off":
-            sounds.buttonPress.play()
-            sounds.running.stop()
-            sounds.end.stop()
-            microwave.setStatus("showingClock");
-            microwave.clearCookTime();
-            microwave.toggleGlass();
-            microwave.showClock();
-            break;
-        case "start":
-            const cookTimer: string = microwave.getCookTime();
-            if (microwave.getStatus() !== "settingTimer" || cookTimer.length === 0)
-            {
-                return;
-            }
-            else
-            {
-                const isExpress: boolean = false;
-                microwave.runTimer(isExpress);
-            }
-            break;
-        case "0":
-        case "1":
-        case "2":
-        case "3":
-        case "4":
-        case "5":
-        case "6":
-        case "7":
-        case "8":
-        case "9":
-            if (( buttonPressed === '1' 
-             || buttonPressed === '2' 
-             || buttonPressed === '3') 
-             && microwave.getStatus() === 'showingClock')
-            {
-                microwave.setExpressTime(parseInt(buttonPressed));
-                const isExpress: boolean = true;
-                microwave.runTimer(isExpress);
-            }
-            const cookTime: string = microwave.getCookTime();
-            if (cookTime.length === 4 || microwave.getStatus() !== "settingTimer")
-            {
-                return;
-            }
-            else
-            {
-                sounds.buttonPress.play()
-                microwave.setStatus("settingTimer");
-                microwave.setCookTime(buttonPressed);
-                microwave.displayCookTime();
-            }
-            break;
-        default:
-            return;
-
-    }
-}
 
 
 function formatCookTime(timeArray: Array<String>, insertPlace: number, currentTime: string): string
@@ -315,3 +242,8 @@ function format(time: number): string
     }
     return formattedTime;
 }
+
+
+const microwave = new Microwave();
+
+export default microwave;

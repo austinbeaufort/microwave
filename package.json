@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node ./dist/index.js"
+    "dev": "node ./dist/index.js",
+    "predeploy": "del -f dist && parcel build index.html --public-url /microwave",
+    "deploy": "gh-pages -d dist"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +23,7 @@
     "ramda": "^0.27.0"
   },
   "devDependencies": {
+    "gh-pages": "^2.2.0",
     "typescript": "^3.9.2"
   }
 }
